@@ -1,41 +1,45 @@
 <?php
-
 /**
- * The plugin bootstrap file
- *
- * This file is read by WordPress to generate the plugin information in the plugin
- * admin area. This file also includes all of the dependencies used by the plugin,
- * registers the activation and deactivation functions, and defines a function
- * that starts the plugin.
- *
- * @link              https://millertchris.com
- * @since             1.0.0
- * @package           Wp_Placeholder
- *
- * @wordpress-plugin
  * Plugin Name:       WP Placeholder
  * Plugin URI:        https://prolificdigital.com
- * Description:       Loads random images for local development if no local images are found.
- * Version:           1.0.0
- * Author:            Chris Miller
- * Author URI:        https://millertchris.com
- * License:           GPL-2.0+
- * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
+ * Description:       Loads placeholder images for local development when local image files are missing.
+ * Version:           1.1.0
+ * Requires at least: 6.5
+ * Requires PHP:      8.4
+ * Author:            Prolific Digital
+ * Author URI:        https://prolificdigital.com
+ * License:           GPL-2.0-or-later
+ * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:       wp-placeholder
  * Domain Path:       /languages
+ * Update URI:        https://api.prolificdigital.io/api/update?plugin=wp-placeholder
+ *
+ * @package WPPlaceholder
  */
 
-// If this file is called directly, abort.
-if (!defined('WPINC')) {
-	die;
+defined( 'ABSPATH' ) || exit;
+
+define( 'WP_PLACEHOLDER_VERSION', '1.1.0' );
+define( 'WP_PLACEHOLDER_PLUGIN_FILE', __FILE__ );
+define( 'WP_PLACEHOLDER_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
+
+// Composer dependencies (plugin-update-checker). Present in release zips;
+// in a git checkout run `composer install` first.
+if ( is_readable( WP_PLACEHOLDER_PLUGIN_DIR . 'vendor/autoload.php' ) ) {
+	require_once WP_PLACEHOLDER_PLUGIN_DIR . 'vendor/autoload.php';
 }
 
+require_once WP_PLACEHOLDER_PLUGIN_DIR . 'includes/update-checker.php';
+
 /**
- * Currently plugin version.
- * Start at version 1.0.0 and use SemVer - https://semver.org
- * Rename this for your plugin and update it as you release new versions.
+ * Load bundled translations from /languages (the header's Domain Path).
  */
-define('WP_PLACEHOLDER_VERSION', '1.0.0');
+add_action(
+	'init',
+	static function () {
+		load_plugin_textdomain( 'wp-placeholder', false, dirname( plugin_basename( WP_PLACEHOLDER_PLUGIN_FILE ) ) . '/languages' );
+	}
+);
 
 if ($_SERVER['REMOTE_ADDR'] === '127.0.0.1') {
 	// Replace src paths
