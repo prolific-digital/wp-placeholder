@@ -36,6 +36,16 @@ if (!defined('WPINC')) {
  * Rename this for your plugin and update it as you release new versions.
  */
 define('WP_PLACEHOLDER_VERSION', '1.0.0');
+define( 'WP_PLACEHOLDER_PLUGIN_FILE', __FILE__ );
+define( 'WP_PLACEHOLDER_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
+
+// Composer dependencies (plugin-update-checker). Present in release zips;
+// in a git checkout run `composer install` first.
+if ( is_readable( WP_PLACEHOLDER_PLUGIN_DIR . 'vendor/autoload.php' ) ) {
+	require_once WP_PLACEHOLDER_PLUGIN_DIR . 'vendor/autoload.php';
+}
+
+require_once WP_PLACEHOLDER_PLUGIN_DIR . 'includes/update-checker.php';
 
 if ($_SERVER['REMOTE_ADDR'] === '127.0.0.1') {
 	// Replace src paths
